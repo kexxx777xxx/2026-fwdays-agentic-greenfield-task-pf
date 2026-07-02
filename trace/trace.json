@@ -1,16 +1,328 @@
 {
   "generatedBy": "scripts/check-traceability.mjs",
-  "requirements": {},
-  "links": [],
+  "requirements": {
+    "FR-001": "MVP",
+    "FR-002": "MVP",
+    "FR-003": "MVP",
+    "FR-004": "MVP",
+    "FR-010": "MVP",
+    "FR-020": "MVP",
+    "FR-021": "MVP",
+    "FR-030": "MVP",
+    "FR-040": "MVP",
+    "FR-041": "MVP",
+    "FR-042": "MVP",
+    "FR-050": "MVP",
+    "FR-051": "MVP",
+    "FR-052": "MVP",
+    "FR-060": "MVP",
+    "FR-100": "Future",
+    "FR-101": "Future",
+    "FR-102": "Future",
+    "FR-103": "Future",
+    "FR-104": "Future",
+    "FR-105": "Future",
+    "FR-106": "Future",
+    "NFR-001": "MVP",
+    "NFR-002": "MVP",
+    "NFR-003": "MVP",
+    "NFR-004": "MVP",
+    "NFR-005": "Future",
+    "TC-001": "MVP",
+    "TC-002": "MVP",
+    "TC-003": "MVP",
+    "TC-004": "MVP",
+    "TC-005": "MVP",
+    "TC-006": "MVP"
+  },
+  "links": [
+    {
+      "id": "FR-001",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-002",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-003",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-004",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-010",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-020",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-021",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-030",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-040",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-041",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-042",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-050",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-051",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-052",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-060",
+      "specs": [],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    }
+  ],
   "failures": [],
   "warnings": [
     {
-      "check": "requirements",
-      "msg": "docs/requirements.md not found - FR chain checks skipped (expected before Phase 1; mandatory at --release)"
+      "check": "spec-mention",
+      "msg": "FR-001 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
     },
     {
-      "check": "plan-ownership",
-      "msg": "docs/mvp-capability-plan.md not found - ownership check skipped (expected before Phase 3; mandatory at --release)"
+      "check": "spec-mention",
+      "msg": "FR-002 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-003 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-004 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-010 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-020 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-021 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-030 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-040 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-041 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-042 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-050 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-051 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-052 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "spec-mention",
+      "msg": "FR-060 is not cited by any spec under openspec/specs/ (no specs authored yet - expected before Phase 2)"
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-001 has no test annotated \"@trace FR-001\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-002 has no test annotated \"@trace FR-002\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-003 has no test annotated \"@trace FR-003\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-004 has no test annotated \"@trace FR-004\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-010 has no test annotated \"@trace FR-010\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-020 has no test annotated \"@trace FR-020\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-021 has no test annotated \"@trace FR-021\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-030 has no test annotated \"@trace FR-030\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-040 has no test annotated \"@trace FR-040\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-041 has no test annotated \"@trace FR-041\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-042 has no test annotated \"@trace FR-042\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-050 has no test annotated \"@trace FR-050\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-051 has no test annotated \"@trace FR-051\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-052 has no test annotated \"@trace FR-052\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-060 has no test annotated \"@trace FR-060\""
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-001 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-002 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-003 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-004 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-010 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-020 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-021 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-030 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-040 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-041 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-042 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-050 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-051 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-052 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-060 is not referenced by any recording manifest under docs/qa/"
     }
   ]
 }
