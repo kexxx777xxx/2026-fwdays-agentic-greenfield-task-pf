@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Coverage output
+coverage/
+
+# Recording scratch (raw frames) — the validated proof under docs/qa/ IS committed
+**/raw/
+
+# Local env — never commit
+.env
+.env.local
+.env.*.local

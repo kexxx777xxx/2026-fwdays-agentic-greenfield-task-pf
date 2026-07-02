@@ -1,0 +1,24 @@
+{
+  "name": "rag-hw-pf",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "echo 'lint: TBD — wire at the stack decision (Phase 3)' && exit 1",
+    "build": "echo 'build: TBD — wire at the stack decision (Phase 3)' && exit 1",
+    "test:run": "echo 'test:run: TBD — wire at the stack decision (Phase 3)' && exit 1",
+    "test:integration": "echo 'test:integration: TBD — wire at the stack decision (Phase 3)' && exit 1",
+    "test:e2e": "echo 'test:e2e: TBD — wire at the stack decision (Phase 3)' && exit 1",
+    "test:coverage": "echo 'test:coverage: TBD — wire at the stack decision (Phase 3)' && exit 1",
+    "qa:verify": "node scripts/qa-verify.mjs",
+    "qa:record-demos": "node scripts/record-demos.mjs",
+    "qa:record-proof": "OUT_DIR=proof-recordings node scripts/record-demos.mjs",
+    "check:trace": "node scripts/check-traceability.mjs",
+    "check:coverage": "node scripts/check-coverage-ratchet.mjs",
+    "check:eval": "node scripts/check-eval-ratchet.mjs",
+    "check:trajectory": "node scripts/check-trajectory.mjs",
+    "check:recordings": "node scripts/check-recordings.mjs",
+    "check:a11y": "node scripts/check-a11y.mjs",
+    "gate:status": "node scripts/gate-status.mjs"
+  }
+}
