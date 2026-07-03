@@ -1,0 +1,33 @@
+{
+  "slice": "add-rag-skeleton",
+  "clean": true,
+  "date": "2026-07-03",
+  "maker_checker": "reviews performed by independent agents (code-reviewer, spec-compliance-auditor); maker did not review own code",
+  "reviews": [
+    {
+      "reviewer": "project-factory:code-reviewer",
+      "critical": 0,
+      "major": 0,
+      "minor": 5,
+      "findings": [
+        { "id": "CR-1", "severity": "minor", "file": "askdocs/answer.py", "summary": "NO_ANSWER used substring match; a real cited answer containing the token was discarded", "resolution": "fixed: exact-match refusal" },
+        { "id": "CR-2", "severity": "minor", "file": "askdocs/answer.py", "summary": "_cited_sources falls back to all context files when model cites nothing", "resolution": "accepted: deliberate NFR-001 guard; precision calibration deferred to add-eval-harness" },
+        { "id": "CR-3", "severity": "minor", "file": "askdocs/retriever.py,store.py", "summary": "payload keys/None not guarded; foreign data could raise raw KeyError/TypeError", "resolution": "fixed: guard None/partial payloads, skip uncitable points" },
+        { "id": "CR-4", "severity": "minor", "file": "askdocs/answer.py", "summary": "empty model reply accepted as grounded found=True answer", "resolution": "fixed: empty/whitespace reply -> honest miss" },
+        { "id": "CR-5", "severity": "minor", "file": "askdocs/llm.py", "summary": "JSON extraction outside try; malformed 200 body not wrapped in LLMError", "resolution": "fixed: parse inside try, typed LLMError" }
+      ]
+    },
+    {
+      "reviewer": "project-factory:spec-compliance-auditor",
+      "verdict": "fully compliant",
+      "scenarios_total": 16,
+      "scenarios_implemented": 16,
+      "scenarios_missing": 0,
+      "scenarios_contradicted": 0,
+      "findings": [
+        { "id": "SC-1", "severity": "minor", "summary": "default ./corpus empty so compose-level ingest smoke not reproducible", "resolution": "fixed: seeded corpus/welcome.md" },
+        { "id": "SC-2", "severity": "minor", "summary": "TC-006 cited in slice-1 spec but plan listed it under slice 2", "resolution": "fixed: TC-006 added to slice-1 constraints in mvp-capability-plan.md" }
+      ]
+    }
+  ]
+}
