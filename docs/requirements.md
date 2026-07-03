@@ -5,11 +5,19 @@
 
 ## Scope rule (this delivery)
 
-- **In scope (MVP) = every FR with status `shipped`.** These are exactly the
-  requirements to implement here. (`Phase = MVP` in the tables below.)
+- **Delivery scope = every FR with status `shipped`** (the 15 FRs). These are
+  exactly the requirements to implement here.
 - **`accepted` NFR/TC = binding constraints** that every slice must honor.
-- **`proposed` / `dropped` = out of scope** (`Phase = Future`); recorded for the
-  map, not implemented until the owner promotes them.
+- **`proposed` / `dropped` = out of scope**; recorded for the map, not
+  implemented until the owner promotes them.
+
+**`Phase` column = the active build front, not final scope.** A `shipped` FR is
+`MVP` once its capability slice is in progress (spec authored → traced →
+implemented); until then it is `Future`. This keeps the traceability chain
+complete at every commit (no MVP FR without a spec/test) while specs are authored
+as per-slice OpenSpec deltas. The full 15-FR scope and slice ownership live in
+[`mvp-capability-plan.md`](mvp-capability-plan.md); FRs flip `Future → MVP` as
+each slice activates. Currently active: **slice 1 (`add-rag-skeleton`)**.
 
 ## Product
 
@@ -33,20 +41,20 @@ OpenAI-compatible LLM · pytest · everything in Docker Compose.
 | ID | Phase | Requirement | Status |
 |---|---|---|---|
 | FR-001 | MVP | Ingest reads local `.md` files from the corpus directory (recursively). | shipped |
-| FR-002 | MVP | Chunking preserves structural blocks (tables, code, sections) — no blind cut every N chars. | shipped |
+| FR-002 | Future | Chunking preserves structural blocks (tables, code, sections) — no blind cut every N chars. | shipped |
 | FR-003 | MVP | Chunks are written to the vector store with source metadata (file path, section) sufficient to cite. | shipped |
-| FR-004 | MVP | Re-indexing the same files creates NO duplicates (idempotency). | shipped |
+| FR-004 | Future | Re-indexing the same files creates NO duplicates (idempotency). | shipped |
 | FR-010 | MVP | Given a user question, the system finds relevant chunks in the vector store. | shipped |
 | FR-020 | MVP | The answer is generated ONLY from the provided chunks, citing the source file. | shipped |
 | FR-021 | MVP | If the corpus has no answer, the system replies honestly ("this is not in the docs") — no fabrication. | shipped |
 | FR-030 | MVP | CLI: the user asks a question and gets an answer + a list of sources. | shipped |
-| FR-040 | MVP | Golden set: 20–30 questions with known answers over the ГущоЛіт corpus. | shipped |
-| FR-041 | MVP | Retrieval metric: verify the correct chunk is found for a question. | shipped |
-| FR-042 | MVP | Anti-hallucination: for out-of-corpus questions the system answers "don't know", not a hallucination. | shipped |
-| FR-050 | MVP | `README.md` at the repo root: what askdocs is, why it exists, how to run it. | shipped |
-| FR-051 | MVP | `AGENTS.md` (and `CLAUDE.md`) with instructions for agents working in the repo. | shipped |
+| FR-040 | Future | Golden set: 20–30 questions with known answers over the ГущоЛіт corpus. | shipped |
+| FR-041 | Future | Retrieval metric: verify the correct chunk is found for a question. | shipped |
+| FR-042 | Future | Anti-hallucination: for out-of-corpus questions the system answers "don't know", not a hallucination. | shipped |
+| FR-050 | Future | `README.md` at the repo root: what askdocs is, why it exists, how to run it. | shipped |
+| FR-051 | Future | `AGENTS.md` (and `CLAUDE.md`) with instructions for agents working in the repo. | shipped |
 | FR-052 | MVP | Simple start: `docker compose up` brings the whole system up with no extra manual steps. | shipped |
-| FR-060 | MVP | Continuous sync of the mounted directory: added/changed/deleted `.md` files are automatically re-indexed. | shipped |
+| FR-060 | Future | Continuous sync of the mounted directory: added/changed/deleted `.md` files are automatically re-indexed. | shipped |
 | FR-100 | Future | Sources beyond local `.md` (Confluence, Jira, Google Drive) — future `DocSource` impls. | proposed |
 | FR-101 | Future | Graph retrieval instead of vector — future `Retriever` impl. | proposed |
 | FR-102 | Future | Multiple LLMs: external/cloud (Claude, GPT, Gemini) + local models — future `LLMProvider` impls. | proposed |
