@@ -7,7 +7,7 @@ removal is added in `add-ingest-quality` (FR-004).
 import os
 import sys
 
-from askdocs.chunking import chunk_document
+from askdocs.chunking import chunk_markdown
 from askdocs.embeddings import EmbeddingProvider
 from askdocs.sources import DocSource
 from askdocs.store import VectorStore
@@ -16,14 +16,18 @@ DEFAULT_COLLECTION = "askdocs"
 
 
 def ingest_source(source: DocSource, embedder: EmbeddingProvider, store: VectorStore) -> int:
-    """Chunk every document from the source, embed, and upsert. Returns chunk count."""
-    chunks = []
+    """Chunk every document, embed, and upsert. Idempotent per file: each file's
+    chunks are replaced wholesale so re-index adds no duplicates and a shrunk file
+    leaves no stale chunks (FR-004). Returns the total chunk count."""
+    total = 0
     for doc in source.documents():
-        chunks.extend(chunk_document(doc.source_path, doc.text))
-    if chunks:
-        vectors = embedder.embed([chunk.text for chunk in chunks])
-        store.upsert(chunks, vectors)
-    return len(chunks)
+        chunks = chunk_markdown(doc.source_path, doc.text)
+        store.delete_by_source(doc.source_path)
+        if chunks:
+            vectors = embedder.embed([chunk.text for chunk in chunks])
+            store.upsert(chunks, vectors)
+        total += len(chunks)
+    return total
 
 
 def main(argv: list[str] | None = None) -> int:

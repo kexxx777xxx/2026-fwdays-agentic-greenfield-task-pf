@@ -1,63 +1,84 @@
-"""Chunking: split a document into stored units with a heading trail.
+"""Structure-aware markdown chunking (FR-002).
 
-Slice 1 (add-rag-skeleton) uses a DELIBERATELY NAIVE splitter: group blank-line
-separated blocks up to a size budget, tracking the latest markdown heading so
-each chunk carries a heading trail for citation. `add-ingest-quality` replaces
-this with a structure-aware splitter that guarantees tables/code/lists stay
-intact (FR-002); do not build that here.
+Documents are split along markdown block boundaries, never by a blind character
+count. A section (the blocks under a heading) is the default chunk; oversized
+sections are split only between blocks, and an atomic block (table, fenced code,
+list) larger than the budget stays whole. The heading trail is the chunk's
+citation context.
 """
 
-import re
 from dataclasses import dataclass
 
-CHUNK_BUDGET = 800  # characters (naive; tuned properly in add-ingest-quality)
+from markdown_it import MarkdownIt
 
-_HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
+CHUNK_SIZE_BUDGET = 1500  # soft target in characters; integrity wins over size
+
+_OPEN_TYPES = {
+    "paragraph_open",
+    "table_open",
+    "bullet_list_open",
+    "ordered_list_open",
+    "blockquote_open",
+}
+_LEAF_TYPES = {"fence", "code_block", "html_block", "hr"}
 
 
 @dataclass(frozen=True)
 class Chunk:
     source_path: str
+    heading: str  # heading trail, e.g. "Двигун > Паливо"
     chunk_index: int
-    heading: str
     text: str
 
 
-def _blocks(text: str) -> list[str]:
-    """Blank-line separated blocks, in order."""
-    return [b.strip("\n") for b in re.split(r"\n\s*\n", text) if b.strip()]
+def _parse_blocks(text: str) -> list[tuple[str, int | None, str]]:
+    """Return top-level blocks as (kind, heading_level, block_text)."""
+    lines = text.split("\n")
+    tokens = MarkdownIt("commonmark").enable("table").parse(text)
+    blocks: list[tuple[str, int | None, str]] = []
+    for tok in tokens:
+        if tok.level != 0 or tok.map is None:
+            continue
+        start, end = tok.map
+        if tok.type == "heading_open":
+            blocks.append(("heading", int(tok.tag[1]), "\n".join(lines[start:end]).strip()))
+        elif tok.type in _OPEN_TYPES or tok.type in _LEAF_TYPES:
+            blocks.append(("block", None, "\n".join(lines[start:end]).rstrip()))
+    return blocks
 
 
-def chunk_document(source_path: str, text: str, budget: int = CHUNK_BUDGET) -> list[Chunk]:
+def _pack(block_texts: list[str], budget: int) -> list[str]:
+    """Greedily join whole blocks up to the budget; never splits inside a block."""
+    pieces: list[str] = []
+    current: list[str] = []
+    size = 0
+    for block in block_texts:
+        if current and size + len(block) > budget:
+            pieces.append("\n\n".join(current))
+            current, size = [], 0
+        current.append(block)
+        size += len(block)
+    if current:
+        pieces.append("\n\n".join(current))
+    return [p for p in pieces if p.strip()]
+
+
+def chunk_markdown(source_path: str, text: str, budget: int = CHUNK_SIZE_BUDGET) -> list[Chunk]:
     chunks: list[Chunk] = []
-    heading = ""
-    buffer: list[str] = []
-    index = 0
+    trail: list[tuple[int, str]] = []  # (level, title)
+    section: list[str] = []
 
     def flush() -> None:
-        nonlocal index, buffer
-        if buffer:
-            chunks.append(
-                Chunk(
-                    source_path=source_path,
-                    chunk_index=index,
-                    heading=heading,
-                    text="\n\n".join(buffer),
-                )
-            )
-            index += 1
-            buffer = []
+        heading = " > ".join(title for _, title in trail)
+        for piece in _pack(section, budget):
+            chunks.append(Chunk(source_path, heading, len(chunks), piece))
+        section.clear()
 
-    for block in _blocks(text):
-        first_line = block.splitlines()[0] if block.splitlines() else ""
-        m = _HEADING_RE.match(first_line)
-        if m:
-            # a heading starts a new section: flush the previous one, retitle
+    for kind, level, block_text in _parse_blocks(text):
+        if kind == "heading":
             flush()
-            heading = m.group(2).strip()
-        current_len = sum(len(b) for b in buffer)
-        if buffer and current_len + len(block) > budget:
-            flush()
-        buffer.append(block)
+            title = block_text.lstrip("#").strip()
+            trail[:] = [t for t in trail if t[0] < level] + [(level, title)]
+        section.append(block_text)
     flush()
     return chunks

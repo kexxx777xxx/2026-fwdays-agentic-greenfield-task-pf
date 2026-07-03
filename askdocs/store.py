@@ -27,6 +27,10 @@ class VectorStore(ABC):
     def upsert(self, chunks: list[Chunk], vectors: list[list[float]]) -> None: ...
 
     @abstractmethod
+    def delete_by_source(self, source_path: str) -> None:
+        """Remove every stored chunk belonging to one source file."""
+
+    @abstractmethod
     def count(self) -> int: ...
 
     @abstractmethod
@@ -74,6 +78,21 @@ class QdrantStore(VectorStore):
         ]
         if points:
             self._client.upsert(self._collection, points=points, wait=True)
+
+    def delete_by_source(self, source_path: str) -> None:
+        self._client.delete(
+            self._collection,
+            points_selector=models.FilterSelector(
+                filter=models.Filter(
+                    must=[
+                        models.FieldCondition(
+                            key="source_path", match=models.MatchValue(value=source_path)
+                        )
+                    ]
+                )
+            ),
+            wait=True,
+        )
 
     def count(self) -> int:
         return self._client.count(self._collection, exact=True).count
