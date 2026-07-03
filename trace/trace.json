@@ -2,9 +2,9 @@
   "generatedBy": "scripts/check-traceability.mjs",
   "requirements": {
     "FR-001": "MVP",
-    "FR-002": "Future",
+    "FR-002": "MVP",
     "FR-003": "MVP",
-    "FR-004": "Future",
+    "FR-004": "MVP",
     "FR-010": "MVP",
     "FR-020": "MVP",
     "FR-021": "MVP",
@@ -46,9 +46,27 @@
       "recordings": []
     },
     {
+      "id": "FR-002",
+      "specs": [
+        "openspec/changes/add-ingest-quality/specs/ingest/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
       "id": "FR-003",
       "specs": [
         "openspec/specs/ingest/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-004",
+      "specs": [
+        "openspec/changes/add-ingest-quality/specs/ingest/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -108,7 +126,15 @@
     },
     {
       "check": "test-trace",
+      "msg": "FR-002 has no test annotated \"@trace FR-002\""
+    },
+    {
+      "check": "test-trace",
       "msg": "FR-003 has no test annotated \"@trace FR-003\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-004 has no test annotated \"@trace FR-004\""
     },
     {
       "check": "test-trace",
@@ -136,7 +162,15 @@
     },
     {
       "check": "recording-evidence",
+      "msg": "FR-002 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
       "msg": "FR-003 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-004 is not referenced by any recording manifest under docs/qa/"
     },
     {
       "check": "recording-evidence",
@@ -157,6 +191,10 @@
     {
       "check": "recording-evidence",
       "msg": "FR-052 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-ingest-quality\" is not archived"
     }
   ]
 }

@@ -17,7 +17,8 @@ implemented); until then it is `Future`. This keeps the traceability chain
 complete at every commit (no MVP FR without a spec/test) while specs are authored
 as per-slice OpenSpec deltas. The full 15-FR scope and slice ownership live in
 [`mvp-capability-plan.md`](mvp-capability-plan.md); FRs flip `Future → MVP` as
-each slice activates. Currently active: **slice 1 (`add-rag-skeleton`)**.
+each slice activates. Currently active: **slice 2 (`add-ingest-quality`)**
+(slice 1 archived).
 
 ## Product
 
@@ -41,9 +42,9 @@ OpenAI-compatible LLM · pytest · everything in Docker Compose.
 | ID | Phase | Requirement | Status |
 |---|---|---|---|
 | FR-001 | MVP | Ingest reads local `.md` files from the corpus directory (recursively). | shipped |
-| FR-002 | Future | Chunking preserves structural blocks (tables, code, sections) — no blind cut every N chars. | shipped |
+| FR-002 | MVP | Chunking preserves structural blocks (tables, code, sections) — no blind cut every N chars. | shipped |
 | FR-003 | MVP | Chunks are written to the vector store with source metadata (file path, section) sufficient to cite. | shipped |
-| FR-004 | Future | Re-indexing the same files creates NO duplicates (idempotency). | shipped |
+| FR-004 | MVP | Re-indexing the same files creates NO duplicates (idempotency). | shipped |
 | FR-010 | MVP | Given a user question, the system finds relevant chunks in the vector store. | shipped |
 | FR-020 | MVP | The answer is generated ONLY from the provided chunks, citing the source file. | shipped |
 | FR-021 | MVP | If the corpus has no answer, the system replies honestly ("this is not in the docs") — no fabrication. | shipped |
