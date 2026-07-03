@@ -22,7 +22,7 @@ capability slices the delivery loop executes one-by-one.
 
 | # | Change name | MVP FRs | Constraints in play | Depends on |
 |---|---|---|---|---|
-| 1 | `add-rag-skeleton` | FR-001, FR-003, FR-010, FR-020, FR-021, FR-030, FR-052 | TC-002, TC-003, TC-004, TC-005; NFR-001, NFR-002, NFR-004 | — |
+| 1 | `add-rag-skeleton` | FR-001, FR-003, FR-010, FR-020, FR-021, FR-030, FR-052 | TC-002, TC-003, TC-004, TC-005, TC-006; NFR-001, NFR-002, NFR-004 | — |
 | 2 | `add-ingest-quality` | FR-002, FR-004 | TC-006; NFR-003 | 1 |
 | 3 | `add-eval-harness` | FR-040, FR-041, FR-042 | NFR-001, NFR-002, NFR-004 | 1, 2 |
 | 4 | `add-sync-and-delivery` | FR-060, FR-050, FR-051 | TC-004; NFR-003 | 1, 2 |

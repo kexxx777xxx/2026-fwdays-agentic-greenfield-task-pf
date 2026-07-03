@@ -54,12 +54,14 @@ class VectorRetriever(Retriever):
             RetrievedChunk(
                 text=payload["text"],
                 source_path=payload["source_path"],
-                heading=payload["heading"],
-                chunk_index=payload["chunk_index"],
+                heading=payload.get("heading", ""),
+                chunk_index=payload.get("chunk_index", 0),
                 score=score,
             )
             for payload, score in self._store.search(vector, limit=k)
-            if score >= self._min_score
+            # skip low-relevance or malformed points (foreign data without a
+            # source is not citable — NFR-001)
+            if score >= self._min_score and payload.get("text") and payload.get("source_path")
         ]
         # store.search already returns most-relevant first; keep that order.
         return results

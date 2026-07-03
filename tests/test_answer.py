@@ -69,3 +69,25 @@ def test_no_answer_marker_becomes_refusal():
     assert answer.found is False
     assert answer.text == REFUSAL_TEXT
     assert answer.sources == []
+
+
+def test_real_answer_containing_marker_substring_is_not_discarded():
+    # A grounded, cited reply that merely mentions the token must NOT be refused
+    # (exact-match contract, not substring). Regression for review finding #1.
+    chunks = [_chunk("proekt.md", "текст")]
+    llm = RecordingLLM("Протокол відмови — це коли модель пише NO_ANSWER, але тут відповідь є [1].")
+    answer = answer_question("як працює відмова?", FakeRetriever(chunks), llm)
+
+    assert answer.found is True
+    assert answer.sources == ["proekt.md"]
+
+
+def test_empty_reply_becomes_refusal_not_empty_answer():
+    # An empty/whitespace model reply must be an honest miss, never a blank
+    # "grounded" answer with sources. Regression for review finding #4.
+    chunks = [_chunk("proekt.md", "текст")]
+    for blank in ("", "   ", "\n\t "):
+        answer = answer_question("q", FakeRetriever(chunks), RecordingLLM(blank))
+        assert answer.found is False
+        assert answer.text == REFUSAL_TEXT
+        assert answer.sources == []

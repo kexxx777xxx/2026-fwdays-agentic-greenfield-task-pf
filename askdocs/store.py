@@ -85,7 +85,7 @@ class QdrantStore(VectorStore):
             batch, offset = self._client.scroll(
                 self._collection, limit=256, offset=offset, with_payload=True
             )
-            points.extend((str(p.id), p.payload) for p in batch)
+            points.extend((str(p.id), p.payload or {}) for p in batch)
             if offset is None:
                 return points
 
@@ -93,4 +93,4 @@ class QdrantStore(VectorStore):
         hits = self._client.query_points(
             self._collection, query=vector, limit=limit, with_payload=True
         ).points
-        return [(hit.payload, hit.score) for hit in hits]
+        return [(hit.payload or {}, hit.score) for hit in hits]

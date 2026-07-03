@@ -52,7 +52,10 @@ class OpenAICompatibleProvider(LLMProvider):
                 timeout=120,
             )
             response.raise_for_status()
+            content = response.json()["choices"][0]["message"]["content"]
         except httpx.HTTPError as e:
             raise LLMError(f"LLM request failed: {e}") from e
-        content = response.json()["choices"][0]["message"]["content"]
-        return strip_think(content)
+        except (KeyError, IndexError, TypeError, ValueError) as e:
+            # a 200 with an unexpected JSON shape is still an LLM-endpoint fault
+            raise LLMError(f"unexpected LLM response shape: {e}") from e
+        return strip_think(content or "")

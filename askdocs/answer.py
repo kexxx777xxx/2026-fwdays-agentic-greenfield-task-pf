@@ -66,8 +66,11 @@ def answer_question(
         return Answer(text=REFUSAL_TEXT, sources=[], found=False)
 
     user_prompt = f"Фрагменти документації:\n\n{_build_context(chunks)}\n\nПитання: {question}"
-    reply = llm.complete(SYSTEM_PROMPT, user_prompt)
+    reply = (llm.complete(SYSTEM_PROMPT, user_prompt) or "").strip()
 
-    if NO_ANSWER_MARKER in reply:
+    # Honest miss when the model declines (exact marker, per the system prompt's
+    # "рівно NO_ANSWER") OR produces nothing usable — never surface an empty
+    # "grounded" answer or discard a real answer that merely mentions the token.
+    if not reply or reply == NO_ANSWER_MARKER:
         return Answer(text=REFUSAL_TEXT, sources=[], found=False)
     return Answer(text=reply, sources=_cited_sources(reply, chunks), found=True)
