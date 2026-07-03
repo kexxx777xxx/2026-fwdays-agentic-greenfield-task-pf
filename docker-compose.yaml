@@ -1,0 +1,24 @@
+services:
+  app:
+    build: .
+    # Slice 1 has no long-running process yet; the real usage is
+    # `docker compose run --rm app python -m askdocs.cli "..."`. `add-sync-and-delivery`
+    # will make `up` run the sync watcher. Keep the service alive so `up` succeeds.
+    command: sleep infinity
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      ASKDOCS_CORPUS: /corpus
+      LLM_BASE_URL: http://host.docker.internal:1234/v1
+      LLM_MODEL: ${LLM_MODEL:-google/gemma-4-e4b}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - .:/app
+      - ./corpus:/corpus
+    depends_on:
+      - qdrant
+
+  qdrant:
+    image: qdrant/qdrant:v1.18.0
+    # No named volume on purpose: qdrant state is ephemeral, so ingest
+    # idempotency tests always run against a clean store (TC-006).
