@@ -1,6 +1,7 @@
-# CI — the loop nobody can skip. Copy to .github/workflows/ci.yml.
-# Mirrors the local gates deterministically: if it isn't green here, it isn't
-# done, regardless of what any agent or human claims.
+# CI — the loop nobody can skip. Mirrors the local gates deterministically:
+# if it isn't green here, it isn't done, regardless of what any agent claims.
+# Python/Docker stack (ADR-0001). The deterministic pytest suite uses a mock
+# LLMProvider, so CI needs no live model endpoint.
 name: ci
 
 on:
@@ -11,53 +12,46 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    env:
-      # Provide test-database and auth secrets via repository secrets.
-      DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
-      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-      BETTER_AUTH_URL: http://localhost:3000
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+      # Node is only for the deterministic check-* scripts (pure Node, no deps).
 
-      - run: npm ci
-
-      # --- static, fast, deterministic ---
-      - name: Lint
-        run: npm run lint
-      - name: Typecheck
-        run: npx tsc --noEmit
+      # --- static / traceability (fast, no containers) ---
       - name: Traceability chain (and freshness of generated report)
         run: |
           node scripts/check-traceability.mjs --check-fresh
-          node scripts/check-traceability.mjs ${{ github.ref_name == 'main' || github.ref_name == 'master' && '--release' || '' }}
+          node scripts/check-traceability.mjs ${{ (github.ref_name == 'main' || github.ref_name == 'master') && '--release' || '' }}
       - name: Trajectory process audit (and freshness)
         run: |
           node scripts/check-trajectory.mjs --check-fresh
-          node scripts/check-trajectory.mjs ${{ github.ref_name == 'main' || github.ref_name == 'master' && '--release' || '' }}
+          node scripts/check-trajectory.mjs ${{ (github.ref_name == 'main' || github.ref_name == 'master') && '--release' || '' }}
       - name: OpenSpec strict validation
-        run: npx openspec validate --all --strict
-      - name: Dependency audit (fail on high+)
-        run: npm audit --audit-level=high
+        run: npx --yes openspec@1.5.0 validate --all --strict
 
-      # --- test battery ---
-      - name: Unit tests + coverage
-        run: npm run test:coverage
+      # --- the app: build the image and run the real battery in the container ---
+      - name: Build app image
+        run: docker compose build
+
+      - name: Lint (ruff, in container)
+        run: docker compose run --rm --no-deps app ruff check askdocs tests
+
+      - name: Tests + coverage (pytest, in container; Qdrant service via compose)
+        run: docker compose run --rm app pytest -q --cov=askdocs --cov-report=term-missing --cov-report=json:coverage/coverage-summary.json
+
       - name: Coverage ratchet
         run: node scripts/check-coverage-ratchet.mjs
-      - name: DB integration tests
-        run: npm run test:integration
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-      - name: E2E tests
-        run: npm run test:e2e
 
-      # --- production build ---
-      - name: Build
-        run: npm run build
+      # --- eval quality bar (once evals exist; graceful no-op before then) ---
+      - name: Eval ratchet
+        run: node scripts/check-eval-ratchet.mjs
+
+      - name: Compose down
+        if: always()
+        run: docker compose down -v
 
       # --- evidence ---
       - name: Upload QA evidence
@@ -69,5 +63,4 @@ jobs:
             docs/qa/traceability-report.md
             trace/trace.json
             coverage/coverage-summary.json
-            playwright-report/
           if-no-files-found: ignore

@@ -1,12 +1,16 @@
 # rag-hw-pf — Agent Rules
 
-# This may NOT be the framework you know
+# Stack (decided — ADR-0001)
 
-The installed version (TBD — set at the stack decision (Phase 3)) may differ from training data.
-Read the relevant guide in `node_modules/<pkg>/dist/docs/` (or the
-package's bundled docs) before writing any code. Heed deprecation notices.
+Python 3.12 · Qdrant (separate, **ephemeral** Compose service) ·
+`sentence-transformers` (`paraphrase-multilingual-MiniLM-L12-v2`, baked into the
+image) · one OpenAI-compatible LLM over `httpx` · `markdown-it-py` chunking ·
+`pytest`. Everything runs in Docker Compose — nothing in the host's Python.
+Package versions in `requirements.txt` may differ from training data; read a
+library's own docs before using an unfamiliar API.
 
-Use `docs/requirements.md` to understand the requirements for the project.
+Use `docs/requirements.md` for scope and `docs/mvp-capability-plan.md` for the
+build order.
 
 ## Project Factory (works in any tool)
 
@@ -52,54 +56,71 @@ the token budget, and what to demote when this file grows past it.
 
 ## Module conventions
 
-- `db/schema/<domain>.ts` per domain, re-exported from `db/schema/index.ts`;
-  migrations committed (SQL + snapshots).
-- `lib/<domain>/`: `validation.ts` (zod + formData mappers), `queries.ts`,
-  `service.ts`, `actions.ts` (guard → validate → service → revalidate),
-  pure helpers in own files, colocated `*.test.ts`.
-- Pages are thin server components; client components only when needed.
-- ONE shared authenticated shell + ONE role-based navigation source.
+Single Python package `askdocs/`, one module per responsibility; the three
+interfaces are ABCs and the logic above them never imports a concrete impl
+(TC-002):
 
-## Correctness rules (learned from production bugs)
+```text
+askdocs/
+  sources.py     # DocSource + LocalMarkdownSource        (FR-001)
+  chunking.py    # structure-aware markdown split          (FR-002)
+  embeddings.py  # EmbeddingProvider + SentenceTransformers (single source of the model name)
+  store.py       # VectorStore + QdrantStore               (FR-003, FR-004)
+  retriever.py   # Retriever + VectorRetriever             (FR-010)
+  llm.py         # LLMProvider + OpenAICompatibleProvider  (FR-020/021)
+  answer.py      # answer pipeline: cite source / honest miss
+  cli.py         # terminal interface                      (FR-030)
+  sync.py        # continuous corpus sync                  (FR-060)
+  eval.py        # golden set + metrics                    (FR-040/041/042)
+tests/           # pytest; tests/corpus = fixture ГущоЛіт; tests/golden.yaml
+corpus/          # user corpus, mounted at /corpus on `docker compose up`
+```
 
-- Server actions never throw raw on user input — catch and surface inline
-  (`?formError=` + shared banner). Translate FK/unique violations to human
-  messages; hide driver internals.
-- Numeric parsers accept trailing zeros and decimal commas.
-- Uncontrolled filter/edit forms are keyed by the server state they display.
-- Status/state selects offer only reachable transitions; server re-validates.
-- External calls (email, exports, APIs) never fail silently: surface to the
-  user or log with cause; degrade honestly (e.g. show fallback link).
-- Auth library cookie propagation from server actions must be wired
-  (Better Auth: `nextCookies()` plugin, last in plugins list).
-- Seed/test helpers re-pin baseline state; day-bound test assertions use
-  LOCAL calendar dates.
-- Validate the RENDERED result for UI, not just code/DOM: gate with axe
-  (`check-a11y`, light+dark) AND a vision pass (`vision-verify` — a fresh agent
-  looks at the settled still); recordings must assert the FRs they show.
+- One embedding provider, one vector store, one LLM in v1 (TC-003). The model
+  name lives ONLY in `embeddings.py`.
+- Every run is in a container (TC-004): `docker compose run --rm app <cmd>`.
+  Qdrant is a separate, ephemeral service (TC-005/006).
+
+## Correctness rules (this domain)
+
+- **Answer without a source citation = bug** (NFR-001). Every answer names the
+  file(s) it drew from.
+- **"Not in the corpus" is a valid answer, not an error** (NFR-002). Honest miss
+  over a confident wrong answer.
+- **Never answer from the model's general knowledge** (NFR-004) — only from
+  retrieved chunks. The synthetic ГущоЛіт domain exists to catch violations.
+- Ingest is **idempotent** (FR-004): re-indexing identical files adds no
+  vectors. Idempotency tests run against a clean store (`clean_store` fixture
+  drops the collection first) (TC-006).
+- Chunking never splits a structural block (table/code/section) mid-way (FR-002).
+- External calls (Qdrant, the LLM endpoint) never fail silently: raise a typed
+  error with cause; the CLI surfaces it, never swallows it.
+- Retrieval and answer are validated by the eval harness (`eval.py` +
+  `golden.yaml`), not just unit assertions — retrieval-hit + anti-hallucination
+  are executable gates.
 
 ## Test-first (per slice)
 
-Write the slice's unit tests + DB smoke flow from the spec FIRST and confirm they
-FAIL (red); then implement to green. Never weaken a test to pass it — if a test
-contradicts the spec, change it deliberately, not silently.
+Write the slice's pytest cases from the spec FIRST and confirm they FAIL (red);
+then implement to green. Deterministic layers use a **mock `LLMProvider`**;
+live-LLM tests are skip-gated (`LLM_LIVE=1`) so CI is green without a running
+model. Never weaken a test to pass it — if a test contradicts the spec, change
+it deliberately, not silently.
 
 ## Validation cadence
 
-Run before and after substantial changes:
+Run before and after substantial changes (everything in the container):
 
 ```bash
-npm run lint
-npm run test:run
-npm run test:integration   # once the layer exists
-npm run test:e2e           # once the layer exists
-npm run build
+docker compose run --rm app pytest          # the whole battery (NFR-003)
+docker compose run --rm app python -m askdocs.eval   # once evals exist
 npx openspec validate --all --strict
-node scripts/check-eval-ratchet.mjs   # once evals exist — graded-quality bar
+node scripts/check-traceability.mjs
+node scripts/check-eval-ratchet.mjs         # once evals exist — graded-quality bar
 ```
 
-Do not archive OpenSpec changes before implementation AND a real-DB smoke
-test pass. Keep `.env.local` private; never commit or print it.
+Do not archive an OpenSpec change before implementation AND a green pytest run
+in the container. Keep `.env`/secrets private; never commit or print them.
 
 ## Evals (graded quality, not just correctness)
 
@@ -117,7 +138,8 @@ clarity, empty-state usability, copy tone — scored 0-100 against a rubric.
 
 ## Environment notes
 
-- macOS (Darwin 25.5), zsh. Node 
-- Database: TBD — chosen at the stack decision (Phase 3).
-- Email: sandbox senders (e.g. `resend.dev`) deliver only to the provider
-  account owner — verify a real domain before UAT.
+- macOS (Darwin 25.5), zsh. Docker Compose is the only supported runtime.
+- Vector store: Qdrant, separate ephemeral Compose service (ADR-0001).
+- LLM: an OpenAI-compatible endpoint at `LLM_BASE_URL` (default a local
+  LM-Studio-style server). Not required for the deterministic pytest suite
+  (mocked); set `LLM_LIVE=1` to exercise the live provider.

@@ -1,14 +1,18 @@
-// Git pre-commit hook (deterministic inner loop) — install per hooks/README.md.
-// Fast, staged-scope checks only; the full battery runs at gates and in CI.
+// Git pre-commit hook (deterministic inner loop) — Python/Docker stack (ADR-0001).
+// Fast, staged-scope checks only; the full pytest battery runs in the container
+// at the gate and in CI (`docker compose run --rm app pytest`).
 //
 //   1. block committing real env files / obvious secrets
-//   2. ESLint on staged JS/TS files
-//   3. tsc --noEmit (whole project, but incremental and fast)
-//   4. traceability validator (fast, pure file parsing)
+//   2. ruff on staged Python files IF ruff is on PATH (best-effort, dev convenience)
+//   3. traceability validator (fast, pure file parsing)
+//   4. trajectory process audit (warns only by default)
 import { execSync } from "node:child_process";
 
 const run = (cmd, opts = {}) => execSync(cmd, { stdio: "inherit", ...opts });
 const capture = (cmd) => execSync(cmd, { encoding: "utf8" }).trim();
+const has = (bin) => {
+  try { execSync(`command -v ${bin}`, { stdio: "ignore" }); return true; } catch { return false; }
+};
 
 const staged = capture("git diff --cached --name-only --diff-filter=ACM")
   .split("\n")
@@ -42,25 +46,21 @@ for (const file of staged) {
   }
 }
 
-// 2 — lint staged sources
-const lintable = staged.filter((f) => /\.(ts|tsx|js|jsx|mjs)$/.test(f));
-if (lintable.length) {
-  run(`npx eslint ${lintable.map((f) => `"${f}"`).join(" ")}`);
+// 2 — lint staged Python (best-effort: only if ruff is installed on the host).
+// The canonical lint runs in the container; this is a fast local guard.
+const pyStaged = staged.filter((f) => f.endsWith(".py"));
+if (pyStaged.length && has("ruff")) {
+  run(`ruff check ${pyStaged.map((f) => `"${f}"`).join(" ")}`);
 }
 
-// 3 — typecheck
-run("npx tsc --noEmit");
-
-// 4 — traceability (fails on broken FR chain / archived-but-unchecked tasks).
-// The validator regenerates the report + trace graph; stage them so the
-// commit always contains the fresh versions (otherwise the worktree is left
-// dirty and CI --check-fresh fails on staleness).
+// 3 — traceability (fails on broken FR chain / archived-but-unchecked tasks).
+// Regenerates the report + trace graph; stage them so the commit carries the
+// fresh versions (otherwise CI --check-fresh fails on staleness).
 run("node scripts/check-traceability.mjs");
 run('git add docs/qa/traceability-report.md trace/trace.json');
 
-// 5 — trajectory (process audit: review evidence, Slice: trailers, scope).
-// Warns only by default, so it won't block a commit; regenerates + stages its
-// report so CI --check-fresh stays green.
+// 4 — trajectory (process audit). Warns only by default; regenerates + stages
+// its report so CI --check-fresh stays green.
 run("node scripts/check-trajectory.mjs");
 run('git add docs/qa/trajectory-report.md trace/trajectory.json');
 

@@ -1,6 +1,6 @@
 // Git commit-msg hook — enforce trace trailers so every commit is linkable.
 //
-// Rule: a commit that touches feature code (app/, lib/, db/, src/) must carry
+// Rule: a commit that touches feature code (askdocs/, app/, lib/, db/, src/) must carry
 // at least one trace reference — either a `Refs:` trailer with FR/NFR/BUG ids
 // or a `Slice:` trailer naming the OpenSpec change. Docs/test/chore commits
 // are exempt. This makes `git log --grep "FR-24"` a complete audit trail.
@@ -13,7 +13,7 @@ const msg = readFileSync(msgFile, "utf8");
 const staged = execSync("git diff --cached --name-only", { encoding: "utf8" })
   .split("\n")
   .filter(Boolean);
-const touchesFeatureCode = staged.some((f) => /^(app|lib|db|src)\//.test(f) && !/\.(test|spec)\./.test(f));
+const touchesFeatureCode = staged.some((f) => /^(askdocs|app|lib|db|src)\//.test(f) && !/(^|\/)(test_|conftest)/.test(f) && !/\.(test|spec)\./.test(f));
 
 if (!touchesFeatureCode) process.exit(0);
 
