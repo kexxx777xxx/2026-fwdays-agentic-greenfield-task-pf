@@ -1,0 +1,32 @@
+{
+  "slice": "add-sync-and-delivery",
+  "clean": true,
+  "date": "2026-07-04",
+  "maker_checker": "reviews by independent agents (code-reviewer, spec-compliance-auditor); maker did not review own code",
+  "reviews": [
+    {
+      "reviewer": "project-factory:spec-compliance-auditor",
+      "verdict": "fully compliant",
+      "scenarios_total": 8,
+      "scenarios_implemented": 8,
+      "findings": []
+    },
+    {
+      "reviewer": "project-factory:code-reviewer",
+      "critical": 0,
+      "major": 2,
+      "minor": 1,
+      "findings": [
+        { "id": "CR-1", "severity": "major", "file": "askdocs/sync.py", "summary": "empty/whitespace .md files re-reported 'added' on every pass (None != empty set falls through each cycle)", "resolution": "fixed: 'no chunks on disk and nothing stored' is a no-op; +regression test" },
+        { "id": "CR-2", "severity": "major", "file": "askdocs/sync.py", "summary": "set-of-hashes comparison missed a changed file whose distinct-text set was unchanged (duplicate-text chunks), leaving stale chunks", "resolution": "fixed: per-file fingerprint is {(chunk_index, content_hash)} (count-sensitive); +regression test" },
+        { "id": "CR-3", "severity": "minor", "file": "askdocs/sync.py", "summary": "watch's broad except also swallows programming errors (infinite quiet loop)", "resolution": "accepted: the sync spec requires the loop SHALL NOT terminate on a failed pass; broad catch keeps the watcher continuous by design. Failures are logged each tick." }
+      ],
+      "verified_not_bugs": [
+        "content_hash payload addition is additive; retrieval/answer/eval consumers unaffected; idempotency preserved",
+        "add/update/delete classification correct for the ordinary case; delete loop correct when store empty or file reappears",
+        "watch/max_iterations has no off-by-one",
+        "_parse_interval rejects non-numeric/<=0/inf/nan; _wait_for_qdrant closes client and re-raises past deadline"
+      ]
+    }
+  ]
+}

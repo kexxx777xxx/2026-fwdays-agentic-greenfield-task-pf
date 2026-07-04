@@ -138,7 +138,7 @@
     {
       "id": "FR-050",
       "specs": [
-        "openspec/changes/add-sync-and-delivery/specs/project-docs/spec.md"
+        "openspec/specs/project-docs/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -147,7 +147,7 @@
     {
       "id": "FR-051",
       "specs": [
-        "openspec/changes/add-sync-and-delivery/specs/project-docs/spec.md"
+        "openspec/specs/project-docs/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -165,7 +165,7 @@
     {
       "id": "FR-060",
       "specs": [
-        "openspec/changes/add-sync-and-delivery/specs/sync/spec.md"
+        "openspec/specs/sync/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -293,10 +293,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-060 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-sync-and-delivery\" is not archived"
     }
   ]
 }

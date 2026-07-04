@@ -21,6 +21,13 @@
       "trailerCommits": 5,
       "libDomains": [],
       "processComplete": true
+    },
+    {
+      "slice": "2026-07-04-add-sync-and-delivery",
+      "reviewEvidence": "clean",
+      "trailerCommits": 3,
+      "libDomains": [],
+      "processComplete": true
     }
   ],
   "overlaps": [],
