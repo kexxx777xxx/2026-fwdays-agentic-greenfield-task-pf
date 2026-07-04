@@ -1,5 +1,6 @@
 """VectorStore interface and the v1 Qdrant implementation (FR-003, TC-005)."""
 
+import hashlib
 import uuid
 from abc import ABC, abstractmethod
 
@@ -18,6 +19,11 @@ class StoreError(RuntimeError):
 
 def chunk_id(chunk: Chunk) -> str:
     return str(uuid.uuid5(_ID_NAMESPACE, f"{chunk.source_path}:{chunk.chunk_index}"))
+
+
+def content_hash(text: str) -> str:
+    """Stable hash of a chunk's text, used by sync to detect unchanged files."""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 class VectorStore(ABC):
@@ -72,6 +78,7 @@ class QdrantStore(VectorStore):
                     "heading": chunk.heading,
                     "chunk_index": chunk.chunk_index,
                     "text": chunk.text,
+                    "content_hash": content_hash(chunk.text),
                 },
             )
             for chunk, vector in zip(chunks, vectors, strict=True)
