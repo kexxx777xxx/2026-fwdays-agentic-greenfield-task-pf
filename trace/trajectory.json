@@ -11,7 +11,7 @@
     {
       "slice": "2026-07-04-add-ingest-quality",
       "reviewEvidence": "clean",
-      "trailerCommits": 4,
+      "trailerCommits": 5,
       "libDomains": [],
       "processComplete": true
     }

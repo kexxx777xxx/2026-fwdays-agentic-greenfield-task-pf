@@ -11,7 +11,7 @@ Result: PASS
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
 |---|---|---|---|---|
 | 2026-07-03-add-rag-skeleton | clean | 4 | yes | - |
-| 2026-07-04-add-ingest-quality | clean | 4 | yes | - |
+| 2026-07-04-add-ingest-quality | clean | 5 | yes | - |
 
 ## Cross-slice module overlap
 

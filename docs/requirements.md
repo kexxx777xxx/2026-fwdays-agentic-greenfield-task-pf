@@ -17,8 +17,8 @@ implemented); until then it is `Future`. This keeps the traceability chain
 complete at every commit (no MVP FR without a spec/test) while specs are authored
 as per-slice OpenSpec deltas. The full 15-FR scope and slice ownership live in
 [`mvp-capability-plan.md`](mvp-capability-plan.md); FRs flip `Future → MVP` as
-each slice activates. Currently active: **slice 2 (`add-ingest-quality`)**
-(slice 1 archived).
+each slice activates. Currently active: **slice 3 (`add-eval-harness`)**
+(slices 1–2 archived).
 
 ## Product
 
@@ -49,9 +49,9 @@ OpenAI-compatible LLM · pytest · everything in Docker Compose.
 | FR-020 | MVP | The answer is generated ONLY from the provided chunks, citing the source file. | shipped |
 | FR-021 | MVP | If the corpus has no answer, the system replies honestly ("this is not in the docs") — no fabrication. | shipped |
 | FR-030 | MVP | CLI: the user asks a question and gets an answer + a list of sources. | shipped |
-| FR-040 | Future | Golden set: 20–30 questions with known answers over the ГущоЛіт corpus. | shipped |
-| FR-041 | Future | Retrieval metric: verify the correct chunk is found for a question. | shipped |
-| FR-042 | Future | Anti-hallucination: for out-of-corpus questions the system answers "don't know", not a hallucination. | shipped |
+| FR-040 | MVP | Golden set: 20–30 questions with known answers over the ГущоЛіт corpus. | shipped |
+| FR-041 | MVP | Retrieval metric: verify the correct chunk is found for a question. | shipped |
+| FR-042 | MVP | Anti-hallucination: for out-of-corpus questions the system answers "don't know", not a hallucination. | shipped |
 | FR-050 | Future | `README.md` at the repo root: what askdocs is, why it exists, how to run it. | shipped |
 | FR-051 | Future | `AGENTS.md` (and `CLAUDE.md`) with instructions for agents working in the repo. | shipped |
 | FR-052 | MVP | Simple start: `docker compose up` brings the whole system up with no extra manual steps. | shipped |

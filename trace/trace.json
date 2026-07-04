@@ -9,9 +9,9 @@
     "FR-020": "MVP",
     "FR-021": "MVP",
     "FR-030": "MVP",
-    "FR-040": "Future",
-    "FR-041": "Future",
-    "FR-042": "Future",
+    "FR-040": "MVP",
+    "FR-041": "MVP",
+    "FR-042": "MVP",
     "FR-050": "Future",
     "FR-051": "Future",
     "FR-052": "MVP",
@@ -109,6 +109,33 @@
       "recordings": []
     },
     {
+      "id": "FR-040",
+      "specs": [
+        "openspec/changes/add-eval-harness/specs/eval/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-041",
+      "specs": [
+        "openspec/changes/add-eval-harness/specs/eval/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-042",
+      "specs": [
+        "openspec/changes/add-eval-harness/specs/eval/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
       "id": "FR-052",
       "specs": [
         "openspec/specs/deployment/spec.md"
@@ -154,6 +181,18 @@
     },
     {
       "check": "test-trace",
+      "msg": "FR-040 has no test annotated \"@trace FR-040\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-041 has no test annotated \"@trace FR-041\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-042 has no test annotated \"@trace FR-042\""
+    },
+    {
+      "check": "test-trace",
       "msg": "FR-052 has no test annotated \"@trace FR-052\""
     },
     {
@@ -190,7 +229,23 @@
     },
     {
       "check": "recording-evidence",
+      "msg": "FR-040 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-041 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-042 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
       "msg": "FR-052 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-eval-harness\" is not archived"
     }
   ]
 }
