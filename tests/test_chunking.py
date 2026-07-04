@@ -31,6 +31,18 @@ def ask(question):
 Кінець розділу.
 """
 
+LIST_DOC = """# Кроки перед польотом
+
+Виконай по порядку:
+
+- Перевір рівень кавової гущі
+- Прогрій ротори-турбінки
+- Закрий кабіну
+- Отримай дозвіл диспетчера
+
+Готово до зльоту.
+"""
+
 
 def test_table_stays_in_one_chunk():
     chunks = chunk_markdown("d.md", TABLE_DOC)
@@ -46,6 +58,14 @@ def test_code_block_stays_in_one_chunk():
     code_chunks = [c for c in chunks if "def ask(question):" in c.text]
     assert len(code_chunks) == 1
     assert "return answer(chunks)" in code_chunks[0].text  # whole fence together
+
+
+def test_list_stays_in_one_chunk():
+    # The spec names lists as an atomic block group: all items in one chunk.
+    chunks = chunk_markdown("l.md", LIST_DOC)
+    list_chunks = [c for c in chunks if "Перевір рівень кавової гущі" in c.text]
+    assert len(list_chunks) == 1
+    assert "Отримай дозвіл диспетчера" in list_chunks[0].text  # last item, same chunk
 
 
 def test_oversized_section_splits_on_block_boundaries():
