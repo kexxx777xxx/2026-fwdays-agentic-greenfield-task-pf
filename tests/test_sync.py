@@ -76,6 +76,35 @@ def test_watch_runs_bounded_passes(clean_store, embedder, tmp_path):
     assert _sources(clean_store) == {"a.md"}
 
 
+@pytest.mark.integration
+def test_empty_file_is_noop_not_perpetually_added(clean_store, embedder, tmp_path):
+    # Regression: a whitespace-only .md must not be reported "added" every pass.
+    (tmp_path / "blank.md").write_text("   \n\n", encoding="utf-8")
+    source = LocalMarkdownSource(tmp_path)
+
+    s1 = sync_once(source, embedder, clean_store)
+    s2 = sync_once(source, embedder, clean_store)
+    assert not s1.changed and not s2.changed
+    assert clean_store.count() == 0
+
+
+@pytest.mark.integration
+def test_duplicate_text_chunk_count_change_is_detected(clean_store, embedder, tmp_path):
+    # Regression: two sections with identical heading+body chunk to identical
+    # TEXT (distinct only by index). Dropping one must be detected as an update
+    # (a set-of-hashes comparison would miss it; the index-aware fingerprint does not).
+    doc = tmp_path / "d.md"
+    doc.write_text("# H\n\nдубль\n\n# H\n\nдубль\n", encoding="utf-8")
+    source = LocalMarkdownSource(tmp_path)
+    sync_once(source, embedder, clean_store)
+    assert clean_store.count() == 2
+
+    doc.write_text("# H\n\nдубль\n", encoding="utf-8")
+    summary = sync_once(source, embedder, clean_store)
+    assert summary.updated == ["d.md"]
+    assert clean_store.count() == 1
+
+
 def test_watch_survives_a_failing_pass(monkeypatch):
     """A transient sync_once failure must not kill the watcher — no Qdrant needed."""
     calls = []

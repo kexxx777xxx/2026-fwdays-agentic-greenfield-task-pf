@@ -52,26 +52,34 @@ class SyncSummary:
         return bool(self.added or self.updated or self.deleted)
 
 
-def _store_hashes_by_source(store: VectorStore) -> dict[str, set[str]]:
-    by_source: dict[str, set[str]] = {}
+def _store_fingerprints_by_source(store: VectorStore) -> dict[str, set[tuple[int, str]]]:
+    """Per-file fingerprint = the set of (chunk_index, content_hash) pairs. Using
+    the index makes it count-sensitive: two chunks with identical text are two
+    distinct entries, so a change in chunk COUNT is always detected (not just a
+    change in the distinct-text set)."""
+    by_source: dict[str, set[tuple[int, str]]] = {}
     for _, payload in store.get_all():
-        by_source.setdefault(payload["source_path"], set()).add(payload["content_hash"])
+        by_source.setdefault(payload["source_path"], set()).add(
+            (payload["chunk_index"], payload["content_hash"])
+        )
     return by_source
 
 
 def sync_once(source: DocSource, embedder: EmbeddingProvider, store: VectorStore) -> SyncSummary:
     """One reconciliation pass: make the store match the current disk state."""
     summary = SyncSummary()
-    store_hashes = _store_hashes_by_source(store)
+    store_fp = _store_fingerprints_by_source(store)
     disk_sources: set[str] = set()
 
     for doc in source.documents():
         disk_sources.add(doc.source_path)
         chunks = chunk_markdown(doc.source_path, doc.text)
-        disk_hashes = {content_hash(c.text) for c in chunks}
-        stored = store_hashes.get(doc.source_path)
+        disk_fp = {(c.chunk_index, content_hash(c.text)) for c in chunks}
+        stored = store_fp.get(doc.source_path)
 
-        if stored == disk_hashes:
+        if stored is None and not disk_fp:
+            continue  # empty file with nothing indexed — nothing to do
+        if stored == disk_fp:
             continue  # unchanged — do not re-embed
 
         # new or changed: replace the file's chunks wholesale (idempotent)
@@ -80,7 +88,7 @@ def sync_once(source: DocSource, embedder: EmbeddingProvider, store: VectorStore
             store.upsert(chunks, embedder.embed([c.text for c in chunks]))
         (summary.added if stored is None else summary.updated).append(doc.source_path)
 
-    for gone in store_hashes.keys() - disk_sources:
+    for gone in store_fp.keys() - disk_sources:
         store.delete_by_source(gone)
         summary.deleted.append(gone)
 
