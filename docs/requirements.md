@@ -17,8 +17,8 @@ implemented); until then it is `Future`. This keeps the traceability chain
 complete at every commit (no MVP FR without a spec/test) while specs are authored
 as per-slice OpenSpec deltas. The full 15-FR scope and slice ownership live in
 [`mvp-capability-plan.md`](mvp-capability-plan.md); FRs flip `Future → MVP` as
-each slice activates. Currently active: **slice 3 (`add-eval-harness`)**
-(slices 1–2 archived).
+each slice activates. Currently active: **slice 4 (`add-sync-and-delivery`)**
+(slices 1–3 archived) — the final slice; all 15 FRs become MVP.
 
 ## Product
 
@@ -52,10 +52,10 @@ OpenAI-compatible LLM · pytest · everything in Docker Compose.
 | FR-040 | MVP | Golden set: 20–30 questions with known answers over the ГущоЛіт corpus. | shipped |
 | FR-041 | MVP | Retrieval metric: verify the correct chunk is found for a question. | shipped |
 | FR-042 | MVP | Anti-hallucination: for out-of-corpus questions the system answers "don't know", not a hallucination. | shipped |
-| FR-050 | Future | `README.md` at the repo root: what askdocs is, why it exists, how to run it. | shipped |
-| FR-051 | Future | `AGENTS.md` (and `CLAUDE.md`) with instructions for agents working in the repo. | shipped |
+| FR-050 | MVP | `README.md` at the repo root: what askdocs is, why it exists, how to run it. | shipped |
+| FR-051 | MVP | `AGENTS.md` (and `CLAUDE.md`) with instructions for agents working in the repo. | shipped |
 | FR-052 | MVP | Simple start: `docker compose up` brings the whole system up with no extra manual steps. | shipped |
-| FR-060 | Future | Continuous sync of the mounted directory: added/changed/deleted `.md` files are automatically re-indexed. | shipped |
+| FR-060 | MVP | Continuous sync of the mounted directory: added/changed/deleted `.md` files are automatically re-indexed. | shipped |
 | FR-100 | Future | Sources beyond local `.md` (Confluence, Jira, Google Drive) — future `DocSource` impls. | proposed |
 | FR-101 | Future | Graph retrieval instead of vector — future `Retriever` impl. | proposed |
 | FR-102 | Future | Multiple LLMs: external/cloud (Claude, GPT, Gemini) + local models — future `LLMProvider` impls. | proposed |

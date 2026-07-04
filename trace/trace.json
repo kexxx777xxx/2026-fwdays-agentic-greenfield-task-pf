@@ -12,10 +12,10 @@
     "FR-040": "MVP",
     "FR-041": "MVP",
     "FR-042": "MVP",
-    "FR-050": "Future",
-    "FR-051": "Future",
+    "FR-050": "MVP",
+    "FR-051": "MVP",
     "FR-052": "MVP",
-    "FR-060": "Future",
+    "FR-060": "MVP",
     "FR-100": "Future",
     "FR-101": "Future",
     "FR-102": "Future",
@@ -136,9 +136,36 @@
       "recordings": []
     },
     {
+      "id": "FR-050",
+      "specs": [
+        "openspec/changes/add-sync-and-delivery/specs/project-docs/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-051",
+      "specs": [
+        "openspec/changes/add-sync-and-delivery/specs/project-docs/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
       "id": "FR-052",
       "specs": [
         "openspec/specs/deployment/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-060",
+      "specs": [
+        "openspec/changes/add-sync-and-delivery/specs/sync/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -193,7 +220,19 @@
     },
     {
       "check": "test-trace",
+      "msg": "FR-050 has no test annotated \"@trace FR-050\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-051 has no test annotated \"@trace FR-051\""
+    },
+    {
+      "check": "test-trace",
       "msg": "FR-052 has no test annotated \"@trace FR-052\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-060 has no test annotated \"@trace FR-060\""
     },
     {
       "check": "recording-evidence",
@@ -241,7 +280,23 @@
     },
     {
       "check": "recording-evidence",
+      "msg": "FR-050 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-051 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
       "msg": "FR-052 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-060 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-sync-and-delivery\" is not archived"
     }
   ]
 }
