@@ -1,0 +1,33 @@
+{
+  "slice": "add-eval-harness",
+  "clean": true,
+  "date": "2026-07-04",
+  "maker_checker": "reviews by independent agents (code-reviewer, spec-compliance-auditor); maker did not review own code",
+  "reviews": [
+    {
+      "reviewer": "project-factory:spec-compliance-auditor",
+      "verdict": "fully compliant",
+      "scenarios_total": 4,
+      "scenarios_implemented": 4,
+      "findings": []
+    },
+    {
+      "reviewer": "project-factory:code-reviewer",
+      "critical": 0,
+      "major": 0,
+      "minor": 2,
+      "findings": [
+        { "id": "CR-1", "severity": "minor", "file": "tests/golden.yaml", "summary": "rotor-count entry claimed single-file source but the fact also appears in kalibruvannya.md, violating the golden set's documented invariant", "resolution": "fixed: corrected the documented claim to 'expected/primary source; metric checks top-k membership' (behavior unchanged)" },
+        { "id": "CR-2", "severity": "minor", "file": "askdocs/eval.py", "summary": "load_golden raised bare KeyError/TypeError on malformed or empty golden file", "resolution": "fixed: typed GoldenSetError naming the offending entry; empty file -> []; +regression test" }
+      ],
+      "verified_not_bugs": [
+        "in/out-of-corpus partition complementary (no double count)",
+        "Report.rate returns 0.0 on empty results (no vacuous pass)",
+        "division-by-zero guarded",
+        "main() isolated to tests/corpus + askdocs_eval collection (no user data pollution)",
+        "source-path matching compares like-with-like relative posix paths"
+      ]
+    }
+  ],
+  "measured": { "retrieval_hit_rate_at_5": "95% (21/22)", "anti_hallucination_refusal_rate": "100% (6/6, live LLM)" }
+}

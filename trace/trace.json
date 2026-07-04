@@ -111,7 +111,7 @@
     {
       "id": "FR-040",
       "specs": [
-        "openspec/changes/add-eval-harness/specs/eval/spec.md"
+        "openspec/specs/eval/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -120,7 +120,7 @@
     {
       "id": "FR-041",
       "specs": [
-        "openspec/changes/add-eval-harness/specs/eval/spec.md"
+        "openspec/specs/eval/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -129,7 +129,7 @@
     {
       "id": "FR-042",
       "specs": [
-        "openspec/changes/add-eval-harness/specs/eval/spec.md"
+        "openspec/specs/eval/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -242,10 +242,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-052 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-eval-harness\" is not archived"
     }
   ]
 }

@@ -9,6 +9,13 @@
       "processComplete": true
     },
     {
+      "slice": "2026-07-04-add-eval-harness",
+      "reviewEvidence": "clean",
+      "trailerCommits": 3,
+      "libDomains": [],
+      "processComplete": true
+    },
+    {
       "slice": "2026-07-04-add-ingest-quality",
       "reviewEvidence": "clean",
       "trailerCommits": 5,
