@@ -55,9 +55,20 @@ class Report:
         return "\n".join(lines)
 
 
+class GoldenSetError(ValueError):
+    """Raised when the golden set file is malformed."""
+
+
 def load_golden(path: Path = GOLDEN_PATH) -> list[GoldenEntry]:
-    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
-    return [GoldenEntry(e["question"], e["in_corpus"], e.get("source")) for e in raw]
+    raw = yaml.safe_load(path.read_text(encoding="utf-8")) or []
+    if not isinstance(raw, list):
+        raise GoldenSetError(f"{path}: expected a list of entries, got {type(raw).__name__}")
+    entries: list[GoldenEntry] = []
+    for i, e in enumerate(raw):
+        if not isinstance(e, dict) or "question" not in e or "in_corpus" not in e:
+            raise GoldenSetError(f"{path}: entry #{i} must have 'question' and 'in_corpus'")
+        entries.append(GoldenEntry(e["question"], e["in_corpus"], e.get("source")))
+    return entries
 
 
 def retrieval_report(retriever: Retriever, golden=None, k: int = DEFAULT_K) -> Report:

@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from conftest import llm_available
 
-from askdocs.eval import hallucination_report, load_golden, retrieval_report
+from askdocs.eval import GoldenSetError, hallucination_report, load_golden, retrieval_report
 from askdocs.ingest import ingest_source
 from askdocs.llm import OpenAICompatibleProvider
 from askdocs.retriever import VectorRetriever
@@ -32,6 +32,17 @@ def test_golden_set_is_well_formed():
             assert (CORPUS_DIR / entry.source).exists(), f"немає файлу {entry.source}"
         else:
             assert entry.source is None
+
+
+def test_load_golden_rejects_malformed_entries(tmp_path):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text("- in_corpus: true\n  source: x.md\n", encoding="utf-8")  # missing question
+    with pytest.raises(GoldenSetError):
+        load_golden(bad)
+
+    empty = tmp_path / "empty.yaml"
+    empty.write_text("", encoding="utf-8")
+    assert load_golden(empty) == []  # empty file -> no entries, not a crash
 
 
 @pytest.fixture
