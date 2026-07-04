@@ -32,16 +32,25 @@ class Chunk:
 
 
 def _parse_blocks(text: str) -> list[tuple[str, int | None, str]]:
-    """Return top-level blocks as (kind, heading_level, block_text)."""
+    """Return top-level blocks as (kind, heading_level, block_text).
+
+    Heading blocks are normalized to ATX form (`## Title`) with the title taken
+    from the heading's `inline` child token, so setext (underline) headings and
+    closed-ATX (`## Title ##`) headings never leak rule characters or trailing
+    hashes into the trail or the chunk text.
+    """
     lines = text.split("\n")
     tokens = MarkdownIt("commonmark").enable("table").parse(text)
     blocks: list[tuple[str, int | None, str]] = []
-    for tok in tokens:
+    for i, tok in enumerate(tokens):
         if tok.level != 0 or tok.map is None:
             continue
         start, end = tok.map
         if tok.type == "heading_open":
-            blocks.append(("heading", int(tok.tag[1]), "\n".join(lines[start:end]).strip()))
+            level = int(tok.tag[1])
+            nxt = tokens[i + 1] if i + 1 < len(tokens) else None
+            title = nxt.content.strip() if nxt is not None and nxt.type == "inline" else ""
+            blocks.append(("heading", level, f"{'#' * level} {title}".rstrip()))
         elif tok.type in _OPEN_TYPES or tok.type in _LEAF_TYPES:
             blocks.append(("block", None, "\n".join(lines[start:end]).rstrip()))
     return blocks

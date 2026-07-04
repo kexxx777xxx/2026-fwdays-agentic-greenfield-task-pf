@@ -92,3 +92,19 @@ def test_heading_trail_is_the_citation_context():
     chunks = chunk_markdown("h.md", doc)
     body = [c for c in chunks if "охолодженою гущею" in c.text][0]
     assert body.heading == "Двигун > Паливо"
+
+
+def test_setext_heading_does_not_leak_underline():
+    # Underline (setext) headings must not put "======" into the trail or text.
+    doc = "Двигун\n======\n\n## Паливо\n\nЗаправляти гущею.\n"
+    chunks = chunk_markdown("s.md", doc)
+    body = [c for c in chunks if "Заправляти гущею" in c.text][0]
+    assert body.heading == "Двигун > Паливо"
+    assert "======" not in "\n".join(c.text for c in chunks)
+
+
+def test_closed_atx_heading_title_has_no_trailing_hashes():
+    doc = "## Розділ ##\n\nтекст розділу.\n"
+    chunks = chunk_markdown("c.md", doc)
+    body = [c for c in chunks if "текст розділу" in c.text][0]
+    assert body.heading == "Розділ"
