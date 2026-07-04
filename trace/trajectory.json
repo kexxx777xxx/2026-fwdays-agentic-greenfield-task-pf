@@ -7,6 +7,13 @@
       "trailerCommits": 4,
       "libDomains": [],
       "processComplete": true
+    },
+    {
+      "slice": "2026-07-04-add-ingest-quality",
+      "reviewEvidence": "clean",
+      "trailerCommits": 4,
+      "libDomains": [],
+      "processComplete": true
     }
   ],
   "overlaps": [],

@@ -1,0 +1,34 @@
+{
+  "slice": "add-ingest-quality",
+  "clean": true,
+  "date": "2026-07-04",
+  "maker_checker": "reviews by independent agents (code-reviewer, spec-compliance-auditor); maker did not review own code. First code-review attempt was interrupted by a platform session limit and re-run to completion.",
+  "reviews": [
+    {
+      "reviewer": "project-factory:spec-compliance-auditor",
+      "verdict": "fully compliant",
+      "scenarios_total": 5,
+      "scenarios_implemented": 5,
+      "scenarios_missing": 0,
+      "findings": [
+        { "id": "SC-1", "severity": "minor", "summary": "spec prose names lists as an atomic block but no test locked list-integrity", "resolution": "fixed: added test_list_stays_in_one_chunk" }
+      ]
+    },
+    {
+      "reviewer": "project-factory:code-reviewer",
+      "critical": 0,
+      "major": 1,
+      "minor": 1,
+      "findings": [
+        { "id": "CR-1", "severity": "major", "file": "askdocs/chunking.py", "summary": "setext (underline) headings leaked '======' into the heading trail and chunk text, corrupting citation context (NFR-001)", "resolution": "fixed: heading title taken from markdown-it inline token, normalized to ATX; +regression test" },
+        { "id": "CR-2", "severity": "minor", "file": "askdocs/chunking.py", "summary": "closed-ATX '## Title ##' left trailing hashes in the title", "resolution": "fixed by the same inline-content normalization; +regression test" }
+      ],
+      "verified_not_bugs": [
+        "content before first heading preserved (empty trail, source_path still cites)",
+        "nested lists/blockquotes/tables/fenced code stay atomic",
+        "blank/whitespace-only docs do not crash",
+        "idempotency: deterministic uuid5 ids + delete-then-upsert (wait=True) correct for reingest and shrunk-file cases"
+      ]
+    }
+  ]
+}

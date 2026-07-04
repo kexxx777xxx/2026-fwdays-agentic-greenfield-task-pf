@@ -48,7 +48,7 @@
     {
       "id": "FR-002",
       "specs": [
-        "openspec/changes/add-ingest-quality/specs/ingest/spec.md"
+        "openspec/specs/ingest/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -66,7 +66,7 @@
     {
       "id": "FR-004",
       "specs": [
-        "openspec/changes/add-ingest-quality/specs/ingest/spec.md"
+        "openspec/specs/ingest/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -191,10 +191,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-052 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-ingest-quality\" is not archived"
     }
   ]
 }
