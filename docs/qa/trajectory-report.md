@@ -13,7 +13,7 @@ Result: PASS
 | 2026-07-03-add-rag-skeleton | clean | 4 | yes | - |
 | 2026-07-04-add-eval-harness | clean | 4 | yes | - |
 | 2026-07-04-add-ingest-quality | clean | 5 | yes | - |
-| 2026-07-04-add-sync-and-delivery | clean | 3 | yes | - |
+| 2026-07-04-add-sync-and-delivery | clean | 4 | yes | - |
 
 ## Cross-slice module overlap
 

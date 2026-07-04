@@ -11,3 +11,6 @@ coverage/
 .env
 .env.local
 .env.*.local
+
+# transient raw coverage (adapter writes coverage-summary.json)
+coverage/pytest-cov.json

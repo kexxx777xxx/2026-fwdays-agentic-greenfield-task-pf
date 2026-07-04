@@ -9,7 +9,7 @@
     "test:run": "docker compose run --rm app pytest -q",
     "test:integration": "docker compose run --rm app pytest -q -m integration",
     "test:e2e": "docker compose run --rm app pytest -q -m e2e",
-    "test:coverage": "docker compose run --rm app pytest -q --cov=askdocs --cov-report=term-missing --cov-report=json:coverage/coverage-summary.json",
+    "test:coverage": "docker compose run --rm app pytest -q --cov=askdocs --cov-branch --cov-report=term-missing --cov-report=json:coverage/pytest-cov.json && node scripts/cov-adapt.mjs",
     "qa:verify": "node scripts/qa-verify.mjs",
     "qa:record-demos": "node scripts/record-demos.mjs",
     "qa:record-proof": "OUT_DIR=proof-recordings node scripts/record-demos.mjs",

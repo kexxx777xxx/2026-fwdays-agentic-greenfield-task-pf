@@ -40,7 +40,7 @@ jobs:
         run: docker compose run --rm --no-deps app ruff check askdocs tests
 
       - name: Tests + coverage (pytest, in container; Qdrant service via compose)
-        run: docker compose run --rm app pytest -q --cov=askdocs --cov-report=term-missing --cov-report=json:coverage/coverage-summary.json
+        run: npm run test:coverage
 
       - name: Coverage ratchet
         run: node scripts/check-coverage-ratchet.mjs

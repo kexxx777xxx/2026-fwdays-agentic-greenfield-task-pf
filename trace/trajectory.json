@@ -25,7 +25,7 @@
     {
       "slice": "2026-07-04-add-sync-and-delivery",
       "reviewEvidence": "clean",
-      "trailerCommits": 3,
+      "trailerCommits": 4,
       "libDomains": [],
       "processComplete": true
     }
