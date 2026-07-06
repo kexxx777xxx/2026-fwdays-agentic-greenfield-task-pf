@@ -18,3 +18,6 @@ coverage/pytest-cov.json
 # pytest coverage data (binary, transient)
 .coverage
 .coverage.*
+
+# JetBrains IDE settings
+.idea/
